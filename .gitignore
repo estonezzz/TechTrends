@@ -4,3 +4,5 @@
 .myvenv/
 __pycache__/
 .vagrant/
+.bsp/
+.idea/

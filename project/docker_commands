@@ -1,11 +1,31 @@
 ## Docker commands used to build the application 
-# TODO: insert the docker build command
+# This command will build the Docker image using the Dockerfile in the current directory.
+# It also tags the image with the name "techtrends".
+docker build -t techtrends .
+
 
 ## Docker commands used to run the application
-# TODO: insert the docker run command
+# This command will run the "techtrends" Docker image in a new container named techtrends-app, 
+# exposing docker port 3111 and application port 7111
+docker run -d --name techtrends-app -p 7111:3111 techtrends
 
 ## Docker commands used to get the application logs
-# TODO: insert the docker logs command
+# This command will fetch the logs from a running Docker container.
+docker logs techtrends-app
 
 ## Logs from the container running the TechTrends application
-# TODO: paste logs from the Docker container 
+ Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+WARNING:werkzeug: * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+INFO:werkzeug: * Running on http://172.17.0.2:3111/ (Press CTRL+C to quit)
+INFO:root:2023-05-21 23:15:14.469840, Article "Kubernetes v1.20 Release Notes" retrieved!
+INFO:werkzeug:172.17.0.1 - - [21/May/2023 23:15:14] "GET /3 HTTP/1.1" 200 -
+INFO:werkzeug:172.17.0.1 - - [21/May/2023 23:15:14] "GET /static/css/main.css HTTP/1.1" 304 -
+INFO:root:2023-05-21 23:15:18.355366, Article "2020 CNCF Annual Report" retrieved!
+INFO:werkzeug:172.17.0.1 - - [21/May/2023 23:15:18] "GET /1 HTTP/1.1" 200 -
+INFO:werkzeug:172.17.0.1 - - [21/May/2023 23:15:18] "GET /static/css/main.css HTTP/1.1" 304 -
+
