@@ -6,3 +6,4 @@ __pycache__/
 .vagrant/
 .bsp/
 .idea/
+github_token
