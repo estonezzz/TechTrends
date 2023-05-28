@@ -1,0 +1,24 @@
+namespace: prod
+name: techtrends
+replicaCount: 5
+service:
+  port: 7111
+  targetPort: 3111
+  protocol: TCP
+  type: ClusterIP
+image:
+  repository: yourdockerhubusername/techtrends
+  tag: latest
+  pullPolicy: Always
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "350m"
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+containerPort: 3111
+livenessProbe:
+  path: /healthz
+readinessProbe:
+  path: /healthz
