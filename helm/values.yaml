@@ -7,7 +7,7 @@ service:
   protocol: TCP
   type: ClusterIP
 image:
-  repository: yourdockerhubusername/techtrends
+  repository: estonezzz/techtrends
   tag: latest
   pullPolicy: IfNotPresent
 resources:
