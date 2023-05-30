@@ -86,11 +86,27 @@ def create():
 # Define the healthcheck route of the web application
 @app.route('/healthz')
 def healthcheck():
+    try:
+        with get_db_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute('SELECT 1 FROM posts LIMIT 1')  # check if 'posts' table exists
+            cursor.fetchone()
+    except sqlite3.Error as e:
+        # if any error occurs, return a 500 error
+        response = app.response_class(
+            response=json.dumps({"result": "ERROR - unhealthy", "details": str(e)}),
+            status=500,
+            mimetype='application/json'
+        )
+        app.logger.error(f'{datetime.now()}, Healthcheck failed, returned 500. Details: {str(e)}')
+        return response
+    
     response = app.response_class(
         response=json.dumps({"result": "OK - healthy"}),
         status=200,
         mimetype='application/json'
     )
+    app.logger.info(f'{datetime.now()}, Healthcheck successful.')
     return response
 
 

@@ -4,10 +4,10 @@ metadata:
   name: {{ .Values.name }}
   namespace: {{ .Values.namespace }}
 spec:
-  type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      targetPort: {{ default .Values.service.port .Values.service.targetPort }}
       protocol: {{ .Values.service.protocol }}
   selector:
     app: {{ .Values.name }}
+  type: {{ .Values.service.type }}

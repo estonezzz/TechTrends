@@ -26,6 +26,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: ./project/techtrends
+        context: techtrends
         push: true
-        tags: estonezzz/techtrends:latest
+        tags: 
+          - estonezzz/techtrends:latest
+          - estonezzz/techtrends:${{ github.sha }}
