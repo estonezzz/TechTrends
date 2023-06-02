@@ -5,13 +5,13 @@ FROM python:3.8-slim-buster
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-ADD . /app
+ADD techtrends /app
 
 # Install the Python dependencies, suppress caching
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run the database initialization script
-RUN python init_db.py
+RUN python techtrends/init_db.py
 
 # Expose the port the app runs on
 EXPOSE 3111

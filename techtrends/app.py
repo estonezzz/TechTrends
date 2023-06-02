@@ -1,11 +1,9 @@
 import sqlite3
 import logging
+import sys
 from datetime import datetime
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
-
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)  # captures all levels, DEBUG and above
 
 # Define a variable for db connection count
 db_connection_count = 0
@@ -33,13 +31,33 @@ def get_post(post_id):
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 
+# Remove all default handlers
+app.logger.handlers = []
+
+# Create handlers
+c_handler = logging.StreamHandler(sys.stdout)  # log to stdout
+c_handler.setLevel(logging.DEBUG)
+
+e_handler = logging.StreamHandler(sys.stderr)  # log to stderr
+e_handler.setLevel(logging.WARNING)  # log warnings and above to stderr
+
+# Create formatters and add it to handlers
+c_format = logging.Formatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+c_handler.setFormatter(c_format)
+e_handler.setFormatter(c_format)
+
+# Add handlers to the logger
+app.logger.setLevel(logging.DEBUG)
+app.logger.addHandler(c_handler)
+app.logger.addHandler(e_handler)
+
 
 # Define the main route of the web application
 @app.route('/')
 def index():
     with get_db_connection() as connection:
         posts = connection.execute('SELECT * FROM posts').fetchall()
-    logging.info(f'{datetime.now()}, Homepage retrieved!')
+    app.logger.info('Homepage retrieved!')
     return render_template('index.html', posts=posts)
 
 
@@ -49,17 +67,17 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-        logging.info(f'{datetime.now()}, Non-existing article accessed, returned 404.')
+        app.logger.warning(' Non-existing article accessed, returned 404.')
         return render_template('404.html'), 404
     else:
-        logging.info('{}, Article "{}" retrieved!'.format(datetime.now(), post['title']))
+        app.logger.info('Article "{}" retrieved!'.format(post['title']))
         return render_template('post.html', post=post)
 
 
 # Define the About Us page
 @app.route('/about')
 def about():
-    logging.info(f'{datetime.now()}, "About Us" page retrieved!')
+    app.logger.info('"About Us" page retrieved!')
     return render_template('about.html')
 
 
@@ -77,7 +95,7 @@ def create():
                 connection.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
                                    (title, content))
                 connection.commit()
-            logging.info('{}, A new article titled "{}" created!'.format(datetime.now(), title))
+            app.logger.info('A new article titled "{}" created!'.format(title))
             return redirect(url_for('index'))
 
     return render_template('create.html')
@@ -98,15 +116,15 @@ def healthcheck():
             status=500,
             mimetype='application/json'
         )
-        app.logger.error(f'{datetime.now()}, Healthcheck failed, returned 500. Details: {str(e)}')
+        app.logger.error(f'Healthcheck failed, returned 500. Details: {str(e)}')
         return response
-    
+
     response = app.response_class(
         response=json.dumps({"result": "OK - healthy"}),
         status=200,
         mimetype='application/json'
     )
-    app.logger.info(f'{datetime.now()}, Healthcheck successful.')
+    app.logger.info('Healthcheck successful.')
     return response
 
 
