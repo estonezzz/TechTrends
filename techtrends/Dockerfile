@@ -11,7 +11,7 @@ ADD techtrends /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run the database initialization script
-RUN python techtrends/init_db.py
+RUN python init_db.py
 
 # Expose the port the app runs on
 EXPOSE 3111
